@@ -3,7 +3,8 @@ const app = express();
 const database = require("./config/database");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-const authController = require("./controllers/auth");
+const authRoutes = require('./routes/auth');
+const projectRoutes = require('./routes/project')
 const { notFound, errorHandler } = require("./middlewares/errorHandler");
 
 require("dotenv").config();
@@ -23,8 +24,9 @@ app.use(
         credentials:true,
     })
 );
-app.post("/api/signup", authController.signup);
-app.post("/api/login", authController.login);
+
+app.use("/api/auth" , authRoutes);
+app.use("/api/project" , projectRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
