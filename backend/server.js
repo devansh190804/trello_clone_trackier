@@ -3,7 +3,8 @@ const app = express();
 const database = require("./config/database");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-
+const authController = require("./controllers/auth");
+const { notFound, errorHandler } = require("./middlewares/errorHandler");
 
 require("dotenv").config();
 
@@ -22,7 +23,11 @@ app.use(
         credentials:true,
     })
 );
+app.post("/api/signup", authController.signup);
+app.post("/api/login", authController.login);
 
+app.use(notFound);
+app.use(errorHandler);
 
 app.get("/" , (req, res) => {
  res.send(`Server is running at PORT ${PORT}`);
