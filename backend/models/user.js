@@ -18,6 +18,14 @@ const userSchema = new mongoose.Schema(
       minLength: [6, "Password must be up to 6 characters"],
       trim: true,
     },
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+    },
+    updatedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+    },
   },
   {
     timestamps: true,

@@ -1,22 +1,20 @@
-import { useState } from 'react'
-import './App.css'
-import Navbar from './components/global/Navbar'
-import { Route, Routes } from "react-router-dom";
+import './index.css';
+
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+
 import Login from './pages/Login';
+import React from 'react';
 import Signup from './pages/Signup';
 
-function App() {
-  
+const App = () => {
   return (
-    <div>
-      <Navbar />
-
+    <Router>
       <Routes>
-        <Route path='/login' element={<Login />} />
-        <Route path='/signup' element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
       </Routes>
-    </div>
-  )
-}
+    </Router>
+  );
+};
 
 export default App;

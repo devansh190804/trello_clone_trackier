@@ -9,7 +9,16 @@ const projectSchema = new mongoose.Schema(
     description: {
         type: String,
         required: [true, "Please add Project Description"],
-      }
+      },
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: [true, "Please add Created By"],
+      },
+    updatedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+    },
   },
   {
     timestamps: true,
