@@ -13,10 +13,11 @@ const taskSchema = new mongoose.Schema(
     projectId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Project",
+      required: [true, "Please enter Project Id"],
     },
     platform: {
       type: String,
-      enum: ["backlog", "in_discussion", "in_progress", "done"],
+      enum: ["backlog", "in_discussion", "in_progress", "done", "todo"],
       default: "in_discussion",
     },
     assignedUserId: {
@@ -32,6 +33,15 @@ const taskSchema = new mongoose.Schema(
         type: String,
       },
     ],
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: [true, "Please add Created By"],
+    },
+    updatedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+    },
   },
   {
     timestamps: true,

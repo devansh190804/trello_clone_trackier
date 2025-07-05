@@ -4,7 +4,10 @@ const database = require("./config/database");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const authRoutes = require('./routes/auth');
-const projectRoutes = require('./routes/project')
+const projectRoutes = require('./routes/project');
+const taskRoutes = require('./routes/task');
+
+
 const { notFound, errorHandler } = require("./middlewares/errorHandler");
 
 require("dotenv").config();
@@ -27,6 +30,8 @@ app.use(
 
 app.use("/api/auth" , authRoutes);
 app.use("/api/project" , projectRoutes);
+app.use("/api/task" , taskRoutes);
+
 
 app.use(notFound);
 app.use(errorHandler);
