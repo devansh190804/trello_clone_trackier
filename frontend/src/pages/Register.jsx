@@ -5,7 +5,7 @@ import { sendApiRequest } from '../services/api';
 import toast from 'react-hot-toast';
 import { useForm } from 'react-hook-form';
 
-const Signup = () => {
+const Register = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -130,4 +130,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default Register;
