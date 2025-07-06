@@ -7,7 +7,7 @@ import DashboardLayout from './layout/DashboardLayout';
 import Login from './pages/Login';
 import OpenRoute from './components/auth/OpenRoute';
 import PrivateRoute from './components/auth/PrivateRoute';
-import Signup from './pages/Signup.jsx';
+import Signup from './pages/signup';
 import Tasks from './pages/Tasks';
 
 const App = () => {
