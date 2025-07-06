@@ -15,7 +15,7 @@ const taskSchema = new mongoose.Schema(
       ref: "Project",
       required: [true, "Please enter Project Id"],
     },
-    platform: {
+    status: {
       type: String,
       enum: ["backlog", "in_discussion", "in_progress", "done", "todo"],
       default: "in_discussion",
@@ -33,6 +33,10 @@ const taskSchema = new mongoose.Schema(
         type: String,
       },
     ],
+    coverImage:    {
+        type: String,
+        
+      },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",

@@ -4,7 +4,7 @@ const createError = require("http-errors");
 
 exports.createTask = async (req, res, next) => {
   try {
-    const { name, description, projectId, assignedUserId, dueDate, tags } = req.body;
+    const { name, description, projectId, assignedUserId, dueDate, tags, coverImage } = req.body;
 
     if (!name || !description || !projectId || !dueDate) {
       throw createError(400, "Name, description, projectId, and dueDate are required");
@@ -14,9 +14,10 @@ exports.createTask = async (req, res, next) => {
       name,
       description,
       projectId,
-      platform: req.body.platform || TASK_STATUS.IN_DISCUSSION,
+      status: req.body.status || TASK_STATUS.IN_DISCUSSION,
       assignedUserId: assignedUserId || req.user.id,
       dueDate,
+      coverImage,
       tags: tags || [],
       createdBy: req.user.id,
     });
@@ -30,7 +31,7 @@ exports.createTask = async (req, res, next) => {
         name: task.name,
         description: task.description,
         projectId: task.projectId,
-        platform: task.platform,
+        status: task.status,
         assignedUserId: task.assignedUserId,
         dueDate: task.dueDate,
         tags: task.tags,
@@ -50,7 +51,7 @@ exports.createTask = async (req, res, next) => {
 
 exports.updateTask = async (req, res, next) => {
   try {
-    const { name, description, projectId, platform, assignedUserId, dueDate, tags } = req.body;
+    const { name, description, projectId, status, assignedUserId, dueDate, tags } = req.body;
 
     const task = await Task.findById(req.params.id);
 
@@ -61,7 +62,7 @@ exports.updateTask = async (req, res, next) => {
     if (name) task.name = name;
     if (description) task.description = description;
     if (projectId) task.projectId = projectId;
-    if (platform) task.platform = platform;
+    if (status) task.status = status;
     if (assignedUserId) task.assignedUserId = assignedUserId;
     if (dueDate) task.dueDate = dueDate;
     if (tags) task.tags = tags;
@@ -76,7 +77,7 @@ exports.updateTask = async (req, res, next) => {
         name: task.name,
         description: task.description,
         projectId: task.projectId,
-        platform: task.platform,
+        status: task.status,
         assignedUserId: task.assignedUserId,
         dueDate: task.dueDate,
         tags: task.tags,
@@ -99,8 +100,8 @@ exports.getTaskById = async (req, res, next) => {
     const task = await Task.findById(req.params.id)
       .populate("projectId", "title")
       .populate("assignedUserId", "name email")
-      .populate("createdBy", "name email")
-      .populate("updatedBy", "name email");
+      .populate("createdBy", "name userName")
+      .populate("updatedBy", "name userName");
 
     if (!task) {
       throw createError(404, "Task not found");
@@ -113,7 +114,7 @@ exports.getTaskById = async (req, res, next) => {
         name: task.name,
         description: task.description,
         projectId: task.projectId,
-        platform: task.platform,
+        status: task.status,
         assignedUserId: task.assignedUserId,
         dueDate: task.dueDate,
         tags: task.tags,
@@ -132,29 +133,34 @@ exports.getTaskById = async (req, res, next) => {
 };
 
 exports.getAllTasks = async (req, res, next) => {
-  try {
-    const tasks = await Task.find()
-      .populate("projectId", "title")
-      .populate("assignedUserId", "name email")
-      .populate("createdBy", "name email")
-      .populate("updatedBy", "name email");
-
-    const groupedTasks = {
-      backlog: tasks.filter(task => task.platform === TASK_STATUS.BACKLOG),
-      todo: tasks.filter(task => task.platform === TASK_STATUS.TODO),
-      in_discussion: tasks.filter(task => task.platform === TASK_STATUS.IN_DISCUSSION),
-      in_progress: tasks.filter(task => task.platform === TASK_STATUS.IN_PROGRESS),
-      done: tasks.filter(task => task.platform === TASK_STATUS.DONE),
-    };
-
-    res.status(200).json({
-      success: true,
-      tasks: groupedTasks,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+    try {
+      const filter = {};
+      if (req.query.projectId) {
+        filter.projectId = req.query.projectId;
+      }
+  
+      const tasks = await Task.find(filter)
+        .populate("projectId", "title")
+        .populate("assignedUserId", "name userName")
+        .populate("createdBy", "name userName")
+        .populate("updatedBy", "name userName");
+  
+      const groupedTasks = {
+        backlog: tasks.filter(task => task.status === TASK_STATUS.BACKLOG),
+        todo: tasks.filter(task => task.status === TASK_STATUS.TODO),
+        in_discussion: tasks.filter(task => task.status === TASK_STATUS.IN_DISCUSSION),
+        in_progress: tasks.filter(task => task.status === TASK_STATUS.IN_PROGRESS),
+        done: tasks.filter(task => task.status === TASK_STATUS.DONE),
+      };
+  
+      res.status(200).json({
+        success: true,
+        tasks: groupedTasks,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
 
 exports.deleteTask = async (req, res, next) => {
   try {
