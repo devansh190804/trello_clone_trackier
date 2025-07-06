@@ -60,10 +60,6 @@ exports.getProjectById = async (req, res, next) => {
       throw createError(404, "Project not found");
     }
 
-    if (project.createdBy.toString() !== req.user.id) {
-      throw createError(403, "Not authorized to access this project");
-    }
-
     res.status(200).json({
       success: true,
       project,
@@ -88,10 +84,6 @@ exports.updateProject = async (req, res, next) => {
 
     if (!project) {
       throw createError(404, "Project not found");
-    }
-
-    if (project.createdBy.toString() !== req.user.id) {
-      throw createError(403, "Not authorized to update this project");
     }
 
     project.title = title;
@@ -126,10 +118,6 @@ exports.deleteProject = async (req, res, next) => {
 
     if (!project) {
       throw createError(404, "Project not found");
-    }
-
-    if (project.createdBy.toString() !== req.user.id) {
-      throw createError(403, "Not authorized to delete this project");
     }
 
     await project.deleteOne();
